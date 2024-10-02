@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carbon Emission Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([20, 0], 2);
+
+        // Add a tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        // Example data (replace with your API data)
+        var emissionData = [
+            { lat: 35.6895, lon: 139.6917, emission: 50 }, // Tokyo
+            { lat: 40.7128, lon: -74.0060, emission: 200 }, // New York
+            { lat: 51.5074, lon: -0.1278, emission: 100 } // London
+        ];
+
+        // Function to get color based on emission level
+        function getColor(emission) {
+            return emission > 150 ? 'red' :
+                   emission > 50  ? 'orange' :
+                                    'blue';
+        }
+
+        // Add circles to the map
+        emissionData.forEach(function(data) {
+            L.circle([data.lat, data.lon], {
+                color: getColor(data.emission),
+                fillColor: getColor(data.emission),
+                fillOpacity: 0.5,
+                radius: 50000
+            }).addTo(map);
+        });
+    </script>
+</body>
+</html>

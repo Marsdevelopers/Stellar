@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map { height: 600px; }
+  </style>
+</head>
+<body>
+  <h1>{{title}}</h1>
+  <div id="map"></div>
+  <!-- Embedding the carbon emission data as JSON -->
+  <script id="emission-data" type="application/json">{{{emissionData}}}</script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="/javascripts/map.js"></script>
+</body>
+</html>

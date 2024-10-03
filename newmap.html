@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EONET Events Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="icon" href="data:,"> <!-- Prevent favicon 404 error -->
+    <style>
+        #map {
+            height: 100vh;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        // Initialize map
+        var map = L.map('map').setView([20, 0], 2);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Function to create a custom icon using an emoji
+        function createEmojiMarker(emoji) {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: '<div style="font-size: 32px;">' + emoji + '</div>', // Use string concatenation
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+            });
+        }
+
+        // EONET API URL for Wildfire, Volcanoes, and Manmade events
+        const apiUrl = 'https://eonet.gsfc.nasa.gov/api/v3/events?categories=wildfires,volcanoes,manmade';
+
+        // Fetch the event data
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Log the fetched data for debugging
+                data.events.forEach(event => {
+                    const category = event.categories[0].title;
+                    const coordinates = event.geometry[0].coordinates;
+                    const eventLocation = [coordinates[1], coordinates[0]]; // [latitude, longitude]
+                    const eventLink = event.sources.length ? event.sources[0].url : null; // First source URL if available
+
+                    // Assign emoji based on event type
+                    let emoji = '';  // Set to an empty string initially
+                    if (category === 'Wildfires') {
+                        emoji = '🔥';  // Wildfire emoji
+                    } else if (category === 'Volcanoes') {
+                        emoji = '🌋';  // Volcano emoji
+                    } else if (category === 'Manmade') {
+                        emoji = '🏭';  // Manmade event emoji
+                    }
+
+                    // Log to check event title and emoji value
+                    console.log('Event Title: ', event.title);
+                    console.log('Emoji: ', emoji);
+
+                    // Create a marker with the assigned emoji and add to the map
+                    L.marker(eventLocation, { icon: createEmojiMarker(emoji) }).addTo(map)
+                        .bindPopup(
+                            '<b>' + emoji + ' ' + event.title + '</b><br>' + 
+                            (eventLink ? '<a href="' + eventLink + '" target="_blank">View Imagery</a>' : 'No Imagery Available')
+                        );
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

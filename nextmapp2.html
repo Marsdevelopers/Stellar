@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carbon Emission Map of Kerala</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        // Sample JSON data representing carbon emissions in Kerala
+        const emissionData = {
+            "data": [
+                {
+                    "district": "Thiruvananthapuram",
+                    "latitude": 8.5241,
+                    "longitude": 76.9366,
+                    "emission": 120 // gCO2/kWh
+                },
+                {
+                    "district": "Kochi",
+                    "latitude": 9.9312,
+                    "longitude": 76.2673,
+                    "emission": 180 // gCO2/kWh
+                },
+                {
+                    "district": "Kozhikode",
+                    "latitude": 11.2588,
+                    "longitude": 75.7804,
+                    "emission": 90 // gCO2/kWh
+                },
+                {
+                    "district": "Kollam",
+                    "latitude": 8.8914,
+                    "longitude": 76.5932,
+                    "emission": 160 // gCO2/kWh
+                },
+                {
+                    "district": "Malappuram",
+                    "latitude": 11.0665,
+                    "longitude": 76.0742,
+                    "emission": 200 // gCO2/kWh
+                },
+                {
+                    "district": "Alappuzha",
+                    "latitude": 9.4981,
+                    "longitude": 76.3400,
+                    "emission": 110 // gCO2/kWh
+                },
+                {
+                    "district": "Pathanamthitta",
+                    "latitude": 9.2549,
+                    "longitude": 76.7915,
+                    "emission": 130 // gCO2/kWh
+                },
+                {
+                    "district": "Idukki",
+                    "latitude": 9.5900,
+                    "longitude": 77.0633,
+                    "emission": 80 // gCO2/kWh
+                },
+                {
+                    "district": "Kottayam",
+                    "latitude": 9.5916,
+                    "longitude": 76.5220,
+                    "emission": 95 // gCO2/kWh
+                },
+                {
+                    "district": "Ernakulam",
+                    "latitude": 9.9814,
+                    "longitude": 76.2826,
+                    "emission": 150 // gCO2/kWh
+                },
+                {
+                    "district": "Palakkad",
+                    "latitude": 10.7865,
+                    "longitude": 76.6545,
+                    "emission": 140 // gCO2/kWh
+                },
+                {
+                    "district": "Wayanad",
+                    "latitude": 11.6053,
+                    "longitude": 76.1319,
+                    "emission": 70 // gCO2/kWh
+                },
+                {
+                    "district": "Kasaragod",
+                    "latitude": 12.5075,
+                    "longitude": 75.4870,
+                    "emission": 160 // gCO2/kWh
+                },
+                {
+                    "district": "Kannur",
+                    "latitude": 11.8745,
+                    "longitude": 75.3704,
+                    "emission": 110 // gCO2/kWh
+                }
+            ]
+        };
+        
+        // Initialize the map
+        var map = L.map('map').setView([10.8505, 76.2711], 7); // Centering on Kerala
+
+        // Add a tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        // Loop through each district and add circles to the map
+        emissionData.data.forEach(function(district) {
+            L.circle([district.latitude, district.longitude], {
+                color: getColor(district.emission),
+                fillColor: getColor(district.emission),
+                fillOpacity: 0.5,
+                radius: 50000 // 50 km radius
+            })
+            .bindPopup('District: ' + district.district + '<br>Carbon Intensity: ' + district.emission + ' gCO2/kWh')
+            .addTo(map);
+        });
+
+        // Function to get color based on emission level
+        function getColor(emission) {
+            return emission > 150 ? 'red' :
+                   emission > 100  ? 'orange' :
+                                     'green'; // Green for low emissions
+        }
+    </script>
+</body>
+</html>
